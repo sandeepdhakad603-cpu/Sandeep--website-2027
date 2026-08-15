@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My To-Do List</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            color: blue;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+background-color: white;
+padding: 12px;
+border-radius: 10px;
+box-shadow: 0 2px 5px gray;
+        li {
+            margin: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+li button {
+    background-color: red;
+      }
+        .done {
+    text-decoration: line-through;
+    color: green;
+    background-color: #d9ffd9;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>My To-Do List 📝</h1>
+
+    <input type="text" id="task" placeholder="Task likho">
+
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="list"></ul>
+
+    <script>
+
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+        function saveTasks() {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function showTasks() {
+
+            document.getElementById("list").innerHTML = "";
+
+            tasks.forEach(function(task, index) {
+
+                let item = document.createElement("li");
+
+                item.innerHTML = task.text + " ";
+
+                if (task.done) {
+                    item.classList.add("done");
+                }
+
+                item.onclick = function() {
+
+                    task.done = !task.done;
+
+                    saveTasks();
+                    showTasks();
+                };
+
+                let deleteButton = document.createElement("button");
+
+                deleteButton.innerHTML = "Delete 🗑️";
+
+                deleteButton.onclick = function(event) {
+
+                    event.stopPropagation();
+
+                    tasks.splice(index, 1);
+
+                    saveTasks();
+                    showTasks();
+                };
+
+                item.appendChild(deleteButton);
+
+                document.getElementById("list").appendChild(item);
+            });
+        }
+
+        function addTask() {
+
+            let taskInput = document.getElementById("task");
+
+            let taskText = taskInput.value;
+
+            if (taskText === "") {
+                alert("Pehle task likho!");
+                return;
+            }
+
+            tasks.push({
+                text: taskText,
+                done: false
+            });
+
+            saveTasks();
+
+            taskInput.value = "";
+
+            showTasks();
+        }
+
+        showTasks();
+
+    </script>
+
+</body>
+  
+</html>
